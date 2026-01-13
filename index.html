@@ -62,27 +62,27 @@
 
         function initMap() {
             // 2. 지도의 중심 설정 (서울 시청 기준)
-            const mapOptions = {
-                center: { lat: 37.566535, lng: 126.977969 },
-                zoom: 13 // 확대 레벨 (숫자가 클수록 확대됨)
-            };
+          const mapOptions = {
+    center: { lat: 37.566535, lng: 126.977969 },
+    zoom: 13,
+    styles: [
+        {
+            featureType: "all", // 모든 요소에 대해
+            elementType: "labels", // 라벨(글자/아이콘)을
+            stylers: [{ visibility: "off" }] // 끕니다
+        }
+    ]
+};
 
             // 3. 지도 생성
             const map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
             // 4. 맛집 리스트를 돌면서 마커(핀) 찍기
             restaurants.forEach((place) => {
-	const imageIcon = "https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/healthy-food-icon.png"; 
-
 	const marker = new google.maps.Marker({
-	    position: { lat: place.lat, lng: place.lng },
-	    map: map,
-	    title: place.name,
-	    icon: {
-	        url: imageIcon, // 아이콘 이미지 주소
-	        scaledSize: new google.maps.Size(40, 40) // 아이콘 크기 조절 (가로, 세로 픽셀)
-    }
-});
+                    position: { lat: place.lat, lng: place.lng },
+                    map: map,
+                    title: place.name
                 });
 
                 // 5. 마커 클릭 시 정보창(Info Window) 띄우기
@@ -103,7 +103,7 @@
     </script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=KEY_GOES_HERE&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACaTTCvvOZRAqaW2yVEwCJqQmOVCbbUrw&callback=initMap">
     </script>
 
 </body>
