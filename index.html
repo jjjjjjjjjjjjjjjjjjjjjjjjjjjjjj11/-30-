@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>서울 30끼</title>
+    <style>
+        /* 지도가 화면 전체를 꽉 채우도록 설정 */
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // 1. 맛집 데이터 리스트 (이름, 위도, 경도, 설명)
+        const restaurants = [
+            {
+                name: "비야게레로",
+                lat: 37.511964, 
+                lng: 127.052805,
+                desc: "멕시코에 왜 가나요? 한국에 있는데."
+            },
+            {
+                name: "호두까기 호두과자",
+                lat: 37.552875, 
+                lng: 127.009883,
+                desc: "뜬금없이 호두과자 먹고 싶을 때. 본점은 경기도 청평. 분점은 약수에 있어요."
+            },
+	{
+                name: "성천막국수",
+                lat: 37.569899, 
+                lng: 127.057818,
+                desc: "60년된 막국수집. 자주 가던 곳인데 성시경이 다녀간 뒤로 포기. 그가 밉습니다."
+            },
+            {
+                name: "운봉산장",
+                lat: 37.508102, 
+                lng: 126.940339,
+                desc: "서울에서 양고기집을 단 한곳만 추천한다면 여기. 최소한 일주일 전에는 예약해야 합니다."
+            },
+            {
+                name: "서부감자국",
+                lat: 37.602264, 
+                lng: 126.926953,
+                desc: "제2의 고향."
+            },
+	{
+                name: "안암",
+                lat: 37.579443, 
+                lng: 126.984419,
+                desc: "정말 다 좋은데 주말엔 4시간 기다려야..저녁에 웨이팅하면 집에서 씻고 누우면 자리났다고 연락와요."
+            },
+            // 여기에 맛집을 계속 추가하면 됩니다.
+        ];
+
+        function initMap() {
+            // 2. 지도의 중심 설정 (서울 시청 기준)
+            const mapOptions = {
+                center: { lat: 37.566535, lng: 126.977969 },
+                zoom: 13 // 확대 레벨 (숫자가 클수록 확대됨)
+            };
+
+            // 3. 지도 생성
+            const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // 4. 맛집 리스트를 돌면서 마커(핀) 찍기
+            restaurants.forEach((place) => {
+	const imageIcon = "https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/healthy-food-icon.png"; 
+
+	const marker = new google.maps.Marker({
+	    position: { lat: place.lat, lng: place.lng },
+	    map: map,
+	    title: place.name,
+	    icon: {
+	        url: imageIcon, // 아이콘 이미지 주소
+	        scaledSize: new google.maps.Size(40, 40) // 아이콘 크기 조절 (가로, 세로 픽셀)
+    }
+});
+                });
+
+                // 5. 마커 클릭 시 정보창(Info Window) 띄우기
+                const infowindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="padding:5px;">
+                            <h3 style="margin:0;">${place.name}</h3>
+                            <p>${place.desc}</p>
+                        </div>
+                    `
+                });
+
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
+            });
+        }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=KEY_GOES_HERE&callback=initMap">
+    </script>
+
+</body>
+</html>
