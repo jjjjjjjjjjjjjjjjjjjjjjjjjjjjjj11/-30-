@@ -1,27 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>서울 30끼</title>
+    <title>서울 30끼 - 큐레이션 맵</title>
     <style>
-        /* 지도가 화면 전체를 꽉 채우도록 설정 */
+        body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
+        
+        /* 지도 전체 화면 설정 */
         #map {
             height: 100vh;
             width: 100%;
         }
-        body {
-            margin: 0;
-            padding: 0;
+
+        /* 필터 박스 스타일 */
+        #filter-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            z-index: 10; /* 지도 위에 떠야 함 */
+            min-width: 120px;
         }
-        /* 정보창 내 텍스트 스타일 */
+        #filter-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .filter-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .filter-item input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        /* 정보창 스타일 */
         .info-box {
             padding: 5px;
             color: #333;
-            min-width: 150px; /* 정보창 너비 최소값 설정 */
+            min-width: 160px;
+            max-width: 220px;
         }
-        .info-box h3 {
+        .info-box h4 {
             margin: 0 0 5px 0;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
+            color: #2c3e50;
+        }
+        .info-box .curator-tag {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 5px;
+            display: block;
         }
         .info-box p {
             margin: 0 0 10px 0;
@@ -38,58 +75,80 @@
             font-size: 12px;
             font-weight: bold;
         }
-        .find-way-btn:hover {
-            background-color: #357ae8;
-        }
+        .find-way-btn:hover { background-color: #357ae8; }
     </style>
 </head>
 <body>
 
+    <div id="filter-box">
+        <h3>큐레이터 선택</h3>
+        <div id="checkbox-container">
+            </div>
+    </div>
+
     <div id="map"></div>
 
     <script>
-        // 1. 맛집 데이터 리스트
+        // 1. 데이터: 큐레이터(curator) 정보와 아이콘 이미지 추가
+        // [TIP] 실제 사용 시 iconUrl에 본인이 원하는 이미지 주소를 넣으세요.
+        const curators = {
+            "미식가 철수": {
+                iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png" 
+            },
+            "소식좌 영희": {
+                iconUrl: "https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
+            },
+            "해장 전문가": {
+                iconUrl: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+            }
+        };
+
         const restaurants = [
             {
                 name: "비야게레로",
-                lat: 37.511964, 
-                lng: 127.052805,
-                desc: "멕시코에 왜 가나요? 한국에 있는데."
+                lat: 37.511964, lng: 127.052805,
+                desc: "멕시코에 왜 가나요? 한국에 있는데.",
+                curator: "미식가 철수"
             },
             {
                 name: "호두까기 호두과자",
-                lat: 37.552875, 
-                lng: 127.009883,
-                desc: "뜬금없이 호두과자 먹고 싶을 때. 본점은 경기도 청평. 분점은 약수에 있어요."
+                lat: 37.552875, lng: 127.009883,
+                desc: "뜬금없이 호두과자 먹고 싶을 때.",
+                curator: "소식좌 영희"
             },
             {
                 name: "성천막국수",
-                lat: 37.569899, 
-                lng: 127.057818,
-                desc: "60년된 막국수집. 자주 가던 곳인데 성시경이 다녀간 뒤로 포기. 그가 밉습니다."
+                lat: 37.569899, lng: 127.057818,
+                desc: "60년된 막국수집. 성시경이 미워지는 맛.",
+                curator: "미식가 철수"
             },
             {
                 name: "운봉산장",
-                lat: 37.508102, 
-                lng: 126.940339,
-                desc: "서울에서 양고기집을 단 한곳만 추천한다면 여기. 최소한 일주일 전에는 예약해야 합니다."
+                lat: 37.508102, lng: 126.940339,
+                desc: "양고기 수육은 여기서 배우세요.",
+                curator: "해장 전문가"
             },
             {
                 name: "서부감자국",
-                lat: 37.602264, 
-                lng: 126.926953,
-                desc: "제2의 고향."
+                lat: 37.602264, lng: 126.926953,
+                desc: "제2의 고향 같은 국물.",
+                curator: "해장 전문가"
             },
             {
                 name: "안암",
-                lat: 37.579443, 
-                lng: 126.984419,
-                desc: "정말 다 좋은데 주말엔 4시간 기다려야..저녁에 웨이팅하면 집에서 씻고 누우면 자리났다고 연락와요."
+                lat: 37.579443, lng: 126.984419,
+                desc: "웨이팅이 길지만 고수 국밥은 못 참지.",
+                curator: "소식좌 영희"
             }
         ];
 
+        let map;
+        let markers = []; // 생성된 마커들을 담아둘 배열 (필터링용)
+        let activeInfoWindow = null; // 현재 열린 정보창
+        let clickedMarker = null; // 클릭해서 고정된 마커가 무엇인지 저장
+
         function initMap() {
-            // 2. 지도의 중심 설정 및 스타일 변경 (흑백 모노크롬)
+            // 2. 지도 스타일 설정 (모노크롬 + 모든 텍스트 라벨 제거)
             const mapOptions = {
                 center: { lat: 37.566535, lng: 126.977969 },
                 zoom: 12,
@@ -97,61 +156,158 @@
                     {
                         "featureType": "all",
                         "elementType": "geometry",
-                        "stylers": [{ "saturation": -100 }]
+                        "stylers": [{ "saturation": -100 }] // 흑백 처리
                     },
                     {
-                        "featureType": "poi", 
+                        "featureType": "all",
                         "elementType": "labels",
-                        "stylers": [{ "visibility": "off" }]
+                        "stylers": [{ "visibility": "off" }] // [중요] 모든 글자(지명, 도로명 등) 숨김
                     }
                 ]
             };
 
-            // 3. 지도 생성
-            const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-            // 4. 맛집 리스트를 돌면서 마커(핀) 찍기
+            // 3. 마커 생성 및 이벤트 연결
             restaurants.forEach((place) => {
-                const marker = new google.maps.Marker({
-                    position: { lat: place.lat, lng: place.lng },
-                    map: map,
-                    // 마커 아래에 이름 표시
-                    label: {
-                        text: place.name,
-                        color: "black", 
-                        fontWeight: "bold",
-                        fontSize: "12px"
-                    },
-                    // 아이콘 설정 (표준 빨간 핀)
-                    icon: {
-                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                        labelOrigin: new google.maps.Point(16, 32) // 텍스트 위치 조정
+                createMarker(place);
+            });
+
+            // 4. 필터 UI 생성
+            createFilterUI();
+
+            // 5. 지도 빈 곳 클릭 시 고정된 정보창 닫기
+            map.addListener("click", () => {
+                if (activeInfoWindow) {
+                    activeInfoWindow.close();
+                    activeInfoWindow = null;
+                }
+                clickedMarker = null; // 고정 해제
+            });
+        }
+
+        function createMarker(place) {
+            // 해당 큐레이터의 아이콘 가져오기
+            const curatorInfo = curators[place.curator];
+            const iconImage = curatorInfo ? curatorInfo.iconUrl : "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+
+            const marker = new google.maps.Marker({
+                position: { lat: place.lat, lng: place.lng },
+                map: map,
+                title: place.name,
+                // 커스텀 이미지 아이콘
+                icon: {
+                    url: iconImage,
+                    scaledSize: new google.maps.Size(32, 32), // 이미지 크기 조절
+                    labelOrigin: new google.maps.Point(16, 40) // 라벨 위치 조정
+                },
+                // 라벨 설정
+                label: {
+                    text: place.name,
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "12px"
+                },
+                // 필터링을 위해 마커 객체에 큐레이터 정보 심어두기
+                custom_curator: place.curator 
+            });
+
+            // 마커 배열에 저장 (나중에 필터링할 때 씀)
+            markers.push(marker);
+
+            // 정보창 내용 구성
+            const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+            const contentString = `
+                <div class="info-box">
+                    <span class="curator-tag">By ${place.curator}</span>
+                    <h4>${place.name}</h4>
+                    <p>${place.desc}</p>
+                    <a href="${directionsUrl}" target="_blank" class="find-way-btn">길찾기 ↗</a>
+                </div>
+            `;
+
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                disableAutoPan: true
+            });
+
+            // --- [핵심 로직] 호버 및 클릭 이벤트 ---
+
+            // 1) 마우스 올렸을 때 (Hover)
+            marker.addListener("mouseover", () => {
+                // 이미 다른 핀이 클릭되어 고정된 상태라면, 호버 창을 띄우지 않거나
+                // 혹은 고정된 것과는 별개로 띄울지 결정해야 함.
+                // 여기서는 "고정된게 없으면 띄운다" 로 구현 (깔끔함)
+                if (clickedMarker !== marker) { 
+                    // 기존에 열린 창이 있으면 닫음 (단, 클릭된게 아닐 때만)
+                    if (activeInfoWindow && !clickedMarker) {
+                        activeInfoWindow.close();
                     }
-                });
-
-                // [수정] 올바른 구글 지도 길찾기 URL (목적지 좌표 입력)
-                const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
-
-                const infowindow = new google.maps.InfoWindow({
-                    content: `
-                        <div class="info-box">
-                            <h3>${place.name}</h3>
-                            <p>${place.desc}</p>
-                            <a href="${directionsUrl}" target="_blank" class="find-way-btn">길찾기 ↗</a>
-                        </div>
-                    `,
-                    disableAutoPan: true // 호버 시 지도 움직임 방지
-                });
-
-                // 호버(mouseover) 시 정보창 열기
-                marker.addListener("mouseover", () => {
                     infowindow.open(map, marker);
+                    activeInfoWindow = infowindow;
+                }
+            });
+
+            // 2) 마우스 뗐을 때 (Out)
+            marker.addListener("mouseout", () => {
+                // "이 마커가 클릭(고정)된 상태"가 아니라면 닫는다.
+                if (clickedMarker !== marker) {
+                    infowindow.close();
+                    if (activeInfoWindow === infowindow) {
+                        activeInfoWindow = null;
+                    }
+                }
+            });
+
+            // 3) 클릭 했을 때 (Fix)
+            marker.addListener("click", () => {
+                // 기존에 고정된 창이나 호버된 창이 있으면 일단 닫음
+                if (activeInfoWindow) activeInfoWindow.close();
+
+                // 이 마커를 "고정 상태"로 설정
+                clickedMarker = marker;
+                
+                // 정보창 열기
+                infowindow.open(map, marker);
+                activeInfoWindow = infowindow;
+            });
+        }
+
+        // 필터 UI 생성 함수
+        function createFilterUI() {
+            const container = document.getElementById("checkbox-container");
+            const curatorNames = Object.keys(curators);
+
+            curatorNames.forEach(name => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "filter-item";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = true; // 기본적으로 다 보여줌
+                checkbox.id = "chk-" + name;
+                
+                // 체크박스 클릭 이벤트
+                checkbox.addEventListener("change", function() {
+                    filterMarkers(name, this.checked);
                 });
 
-                // 마우스가 벗어나면(mouseout) 정보창 닫기
-                marker.addListener("mouseout", () => {
-                    infowindow.close();
-                });
+                const label = document.createElement("label");
+                label.htmlFor = "chk-" + name;
+                label.innerText = name;
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            });
+        }
+
+        // 마커 필터링 함수
+        function filterMarkers(curatorName, isVisible) {
+            markers.forEach(marker => {
+                if (marker.custom_curator === curatorName) {
+                    marker.setVisible(isVisible); // 구글 맵 API의 setVisible 사용
+                }
             });
         }
     </script>
