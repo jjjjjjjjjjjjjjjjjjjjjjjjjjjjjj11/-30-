@@ -12,6 +12,31 @@
             margin: 0;
             padding: 0;
         }
+        /* 정보창 내 텍스트 스타일 */
+        .info-box {
+            padding: 5px;
+            color: #333;
+        }
+        .info-box h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        .info-box p {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+        }
+        .find-way-btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #4285F4;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .find-way-btn:hover {
+            background-color: #357ae8;
+        }
     </style>
 </head>
 <body>
@@ -19,7 +44,7 @@
     <div id="map"></div>
 
     <script>
-        // 1. 맛집 데이터 리스트 (이름, 위도, 경도, 설명)
+        // 1. 맛집 데이터 리스트
         const restaurants = [
             {
                 name: "비야게레로",
@@ -33,7 +58,7 @@
                 lng: 127.009883,
                 desc: "뜬금없이 호두과자 먹고 싶을 때. 본점은 경기도 청평. 분점은 약수에 있어요."
             },
-	{
+            {
                 name: "성천막국수",
                 lat: 37.569899, 
                 lng: 127.057818,
@@ -51,79 +76,85 @@
                 lng: 126.926953,
                 desc: "제2의 고향."
             },
-	{
+            {
                 name: "안암",
                 lat: 37.579443, 
                 lng: 126.984419,
                 desc: "정말 다 좋은데 주말엔 4시간 기다려야..저녁에 웨이팅하면 집에서 씻고 누우면 자리났다고 연락와요."
-            },
-	{
-                name: "경춘자의 라면 땡기는 날",
-                lat: 37.579295, 
-                lng: 126.982271,
-                desc: "한국인이라면 매콤한 라면 안먹고 배기나요. "
-            },
-	{
-                name: "라멘 시미즈",
-                lat:37.571364, 
-                lng:126.972993,
-                desc: "늘 일본에서 여기를 이길 수 있는 집을 찾고 있는데 아직 못찾았어요. 시오 라멘 대장. "
-            },
-	{
-                name: "중앙해장",
-                lat:37.508293, 
-                lng:127.065499,
-                desc: "제3의 고향."
-            },
-            // 여기에 맛집을 계속 추가하면 됩니다.
+            }
         ];
 
         function initMap() {
-            // 2. 지도의 중심 설정 (서울 시청 기준)
-          const mapOptions = {
-    center: { lat: 37.566535, lng: 126.977969 },
-    zoom: 13,
-    styles: [
-        {
-            featureType: "all", // 모든 요소에 대해
-            elementType: "labels", // 라벨(글자/아이콘)을
-            stylers: [{ visibility: "off" }] // 끕니다
-        }
-    ]
-};
+            // 2. 지도의 중심 설정 및 스타일 변경 (흑백 모노크롬)
+            const mapOptions = {
+                center: { lat: 37.566535, lng: 126.977969 },
+                zoom: 12,
+                styles: [
+                    {
+                        "featureType": "all",
+                        "elementType": "geometry",
+                        "stylers": [{ "saturation": -100 }] // 채도를 빼서 흑백으로 만듦
+                    },
+                    {
+                        "featureType": "poi", // 관심 지점(기본 상점 등) 라벨 끄기
+                        "elementType": "labels",
+                        "stylers": [{ "visibility": "off" }]
+                    }
+                ]
+            };
 
             // 3. 지도 생성
             const map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
             // 4. 맛집 리스트를 돌면서 마커(핀) 찍기
             restaurants.forEach((place) => {
-	const marker = new google.maps.Marker({
+                const marker = new google.maps.Marker({
                     position: { lat: place.lat, lng: place.lng },
                     map: map,
-                    title: place.name
+                    // [변경] 마커 아래에 이름 표시
+                    label: {
+                        text: place.name,
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "12px"
+                    },
+                    // [중요] 라벨을 마커 아래로 내리기 위해 아이콘과 라벨 원점(labelOrigin) 재설정
+                    icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png", // 기본 빨간 핀 이미지
+                        labelOrigin: new google.maps.Point(16, 40) // (x, y) 좌표를 조절하여 텍스트를 핀 아래로 이동
+                    }
                 });
 
-                // 5. 마커 클릭 시 정보창(Info Window) 띄우기
+                // [변경] 길찾기 링크 추가 (구글 지도 URL 스킴 사용)
+                // destination에 목적지 좌표를 넣으면, 사용자의 현재 위치에서 출발하는 경로가 열립니다.
+                const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+
                 const infowindow = new google.maps.InfoWindow({
                     content: `
-                        <div style="padding:5px;">
-                            <h3 style="margin:0;">${place.name}</h3>
+                        <div class="info-box">
+                            <h3>${place.name}</h3>
                             <p>${place.desc}</p>
+                            <a href="${directionsUrl}" target="_blank" class="find-way-btn">길찾기 ↗</a>
                         </div>
-                    `
+                    `,
+                    disableAutoPan: true // 호버 시 지도가 움직이지 않도록 설정 (선택사항)
                 });
 
-                marker.addListener("click", () => {
+                // [변경] 클릭 대신 호버(mouseover) 시 정보창 열기
+                marker.addListener("mouseover", () => {
                     infowindow.open(map, marker);
+                });
+
+                // [변경] 마우스가 벗어나면(mouseout) 정보창 닫기
+                marker.addListener("mouseout", () => {
+                    infowindow.close();
                 });
             });
         }
     </script>
-
+    
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACaTTCvvOZRAqaW2yVEwCJqQmOVCbbUrw&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
     </script>
-
 </body>
 </html>
-
