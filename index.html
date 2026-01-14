@@ -16,23 +16,27 @@
         .info-box {
             padding: 5px;
             color: #333;
+            min-width: 150px; /* 정보창 너비 최소값 설정 */
         }
         .info-box h3 {
             margin: 0 0 5px 0;
             font-size: 16px;
+            font-weight: bold;
         }
         .info-box p {
             margin: 0 0 10px 0;
             font-size: 13px;
+            line-height: 1.4;
         }
         .find-way-btn {
             display: inline-block;
             text-decoration: none;
             background-color: #4285F4;
             color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
+            padding: 6px 12px;
+            border-radius: 4px;
             font-size: 12px;
+            font-weight: bold;
         }
         .find-way-btn:hover {
             background-color: #357ae8;
@@ -93,10 +97,10 @@
                     {
                         "featureType": "all",
                         "elementType": "geometry",
-                        "stylers": [{ "saturation": -100 }] // 채도를 빼서 흑백으로 만듦
+                        "stylers": [{ "saturation": -100 }]
                     },
                     {
-                        "featureType": "poi", // 관심 지점(기본 상점 등) 라벨 끄기
+                        "featureType": "poi", 
                         "elementType": "labels",
                         "stylers": [{ "visibility": "off" }]
                     }
@@ -111,22 +115,21 @@
                 const marker = new google.maps.Marker({
                     position: { lat: place.lat, lng: place.lng },
                     map: map,
-                    // [변경] 마커 아래에 이름 표시
+                    // 마커 아래에 이름 표시
                     label: {
                         text: place.name,
-                        color: "black",
+                        color: "black", 
                         fontWeight: "bold",
                         fontSize: "12px"
                     },
-                    // [중요] 라벨을 마커 아래로 내리기 위해 아이콘과 라벨 원점(labelOrigin) 재설정
+                    // 아이콘 설정 (표준 빨간 핀)
                     icon: {
-                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png", // 기본 빨간 핀 이미지
-                        labelOrigin: new google.maps.Point(16, 40) // (x, y) 좌표를 조절하여 텍스트를 핀 아래로 이동
+                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                        labelOrigin: new google.maps.Point(16, 32) // 텍스트 위치 조정
                     }
                 });
 
-                // [변경] 길찾기 링크 추가 (구글 지도 URL 스킴 사용)
-                // destination에 목적지 좌표를 넣으면, 사용자의 현재 위치에서 출발하는 경로가 열립니다.
+                // [수정] 올바른 구글 지도 길찾기 URL (목적지 좌표 입력)
                 const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
 
                 const infowindow = new google.maps.InfoWindow({
@@ -137,15 +140,15 @@
                             <a href="${directionsUrl}" target="_blank" class="find-way-btn">길찾기 ↗</a>
                         </div>
                     `,
-                    disableAutoPan: true // 호버 시 지도가 움직이지 않도록 설정 (선택사항)
+                    disableAutoPan: true // 호버 시 지도 움직임 방지
                 });
 
-                // [변경] 클릭 대신 호버(mouseover) 시 정보창 열기
+                // 호버(mouseover) 시 정보창 열기
                 marker.addListener("mouseover", () => {
                     infowindow.open(map, marker);
                 });
 
-                // [변경] 마우스가 벗어나면(mouseout) 정보창 닫기
+                // 마우스가 벗어나면(mouseout) 정보창 닫기
                 marker.addListener("mouseout", () => {
                     infowindow.close();
                 });
@@ -154,7 +157,7 @@
     </script>
     
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACaTTCvvOZRAqaW2yVEwCJqQmOVCbbUrw&callback=initMap">
     </script>
 </body>
 </html>
