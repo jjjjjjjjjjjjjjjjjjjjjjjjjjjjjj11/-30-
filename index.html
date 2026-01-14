@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>서울 30끼 - Expanded Edition</title>
+    <title>서울 30끼 - Final Update</title>
     <meta charset="utf-8">
     <style>
         body { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
@@ -68,7 +68,7 @@
             content: "네이버, 카카오, 구글, 뽈레 평균 점수";
             position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
             background-color: #333; color: #fff;
-            padding: 6px 10px; border-radius: 4px; font-size: 10px;
+            padding: 6px 10px; border-radius: 4px; font-size: 11px;
             white-space: nowrap; z-index: 100; pointer-events: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
@@ -78,7 +78,7 @@
             border-color: #333 transparent transparent transparent;
         }
 
-        /* 지도 앱 연결 버튼 */
+        /* 지도 앱 연결 버튼 (T맵 제거됨) */
         .map-links { display: flex; gap: 5px; }
         .map-btn {
             display: inline-flex; justify-content: center; align-items: center;
@@ -88,7 +88,6 @@
         }
         .map-btn.naver { background-color: #03C75A; } 
         .map-btn.kakao { background-color: #FEE500; color: #000; } 
-        .map-btn.tmap { background-color: #E6002D; } 
         .map-btn:hover { opacity: 0.8; }
 
         /* 스크롤바 커스텀 */
@@ -119,21 +118,43 @@
             "경안": { color: "#00BCD4", iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png" },
             "동욱": { color: "#4CAF50", iconUrl: "https://maps.google.com/mapfiles/ms/icons/pink-dot.png" },
             "예지": { color: "#546E7A", iconUrl: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png" },
-            
-            // [NEW] 슐리 (Deep Orange)
             "슐리": { color: "#FF5722", iconUrl: "https://www.google.com/maps/dir/..." },
-            // [NEW] 규혁 (Indigo)
             "규혁": { color: "#3F51B5", iconUrl: "https://www.google.com/maps/dir/?api=1&destination=..." }
         };
 
         // 2. 맛집 데이터
         const restaurants = [
-            // --- 기존 데이터 ---
+            // --- [UPDATED] 제헌 (Jeheon) 리스트 업데이트 ---
             { curator: "제헌", name: "비야게레로", lat: 37.511964, lng: 127.052805, desc: "멕시코에 왜 가나요? 한국에 있는데.", score: "4.8" },
-            { curator: "제헌", name: "호두까기 호두과자", lat: 37.552875, lng: 127.009883, desc: "뜬금없이 호두과자 먹고 싶을 때...", score: "4.5" },
-            { curator: "제헌", name: "성천막국수", lat: 37.569899, lng: 127.057818, desc: "60년된 막국수집...", score: "4.7" },
-            { curator: "제헌", name: "운봉산장", lat: 37.508102, lng: 126.940339, desc: "서울에서 양고기집을 단 한곳만...", score: "4.9" },
-            { curator: "제헌", name: "안암", lat: 37.579443, lng: 126.984419, desc: "정말 다 좋은데 주말엔 4시간...", score: "4.8" },
+            { curator: "제헌", name: "호두까기 호두과자", lat: 37.552875, lng: 127.009883, desc: "뜬금없이 호두과자 먹고 싶을 때. 본점은 경기도 청평. 분점은 약수에 있어요.", score: "4.5" },
+            { curator: "제헌", name: "성천막국수", lat: 37.569899, lng: 127.057818, desc: "60년된 막국수집. 자주 가던 곳인데 성시경이 다녀간 뒤로 포기. 그가 밉습니다.", score: "4.7" },
+            { curator: "제헌", name: "운봉산장", lat: 37.508102, lng: 126.940339, desc: "서울에서 양고기집을 단 한곳만 추천한다면. 최소한 일주일 전에는 예약해야 합니다.", score: "4.9" },
+            { curator: "제헌", name: "서부감자국", lat: 37.602264, lng: 126.926953, desc: "제2의 고향. 합성숭실", score: "4.6" },
+            { curator: "제헌", name: "안암", lat: 37.579443, lng: 126.984419, desc: "정말 다 좋은데 주말엔 4시간 기다려야..집에서 씻고 누우면 자리났다고 연락와요.", score: "4.8" },
+            { curator: "제헌", name: "경춘자의 라면 땡기는 날", lat: 37.579155, lng: 126.981328, desc: "한국인이라면 매콤한 라면 안먹고 배기나요?", score: "4.4" },
+            { curator: "제헌", name: "라멘 시미즈", lat: 37.555845, lng: 126.910602, desc: "늘 일본에서 여기를 이길 수 있는 집을 찾고 있는데 아직 못찾았어요. 시오 라멘 대장.", score: "4.7" },
+            { curator: "제헌", name: "중앙해장", lat: 37.508298, lng: 127.065448, desc: "제3의 고향.", score: "4.5" },
+            { curator: "제헌", name: "시네큐브", lat: 37.569922, lng: 126.970535, desc: "영화는 마음의 양식.", score: "5.0" },
+            { curator: "제헌", name: "큔", lat: 37.579040, lng: 126.965800, desc: "서울에서 가장 애정하는 비건 식당. 마음씨 고운 사람같은 곳.", score: "4.9" },
+            { curator: "제헌", name: "옥경이네 건생선", lat: 37.567010, lng: 127.016350, desc: "오징어에도 등급이 있다면 아마도 투플러스. 환상적인 반건조 오징어 구이.", score: "4.6" },
+            { curator: "제헌", name: "진미평양냉면", lat: 37.516130, lng: 127.036040, desc: "이런 평냉 또 없습니다.", score: "4.7" },
+            { curator: "제헌", name: "수퍼", lat: 37.542850, lng: 126.951300, desc: "긴말 필요 없는 수프 전문점. 그냥 드세요.", score: "4.5" },
+            { curator: "제헌", name: "풍년삼계탕", lat: 37.567500, lng: 126.975700, desc: "들깨삼계탕을 시키면 인삼주가 나와요. 주객전도.", score: "4.4" },
+            { curator: "제헌", name: "금산제면소", lat: 37.560600, lng: 126.985600, desc: "고해성사. 오너가 직원을 폭행한 뒤로 정말 가지 말아야지 다짐하는데 갑니다..", score: "4.3" },
+            { curator: "제헌", name: "하동관", lat: 37.564400, lng: 126.984000, desc: "제4의 고향.", score: "4.6" },
+            { curator: "제헌", name: "부영도가니탕", lat: 37.571400, lng: 126.983000, desc: "50년된 노포. 시간은 거짓말하지 않습니다.", score: "4.7" },
+            // [추가] 고향 (한남동 위치 추정)
+            { curator: "제헌", name: "고향", lat: 37.534500, lng: 127.001800, desc: "일식집은 왜 이자카야 아니면 오마카세밖에 없나요? 라고 물으신다면. 일식계의 후덕죽.", score: "4.5" },
+            // [추가] 서울서둘째로잘하는집
+            { curator: "제헌", name: "서울서둘째로잘하는집", lat: 37.586600, lng: 126.982200, desc: "아름다운 단팥죽. 너무 겸손하신듯.", score: "4.8" },
+            // [추가] 진주회관
+            { curator: "제헌", name: "진주회관", lat: 37.562750, lng: 126.975500, desc: "콩국수를 먹지 않으면 여름은 오지 않습니다.", score: "4.9" },
+            // [추가] 철철복집
+            { curator: "제헌", name: "철철복집", lat: 37.567900, lng: 126.981600, desc: "복지리를 먹지 않으면 겨울은 오지 않습니다.", score: "4.8" },
+            // [추가] 우래옥
+            { curator: "제헌", name: "우래옥", lat: 37.568200, lng: 126.998700, desc: "영원하리.", score: "4.9" },
+
+            // --- 나머지 큐레이터들 ---
             { curator: "지해", name: "KITH 성수", lat: 37.544150, lng: 127.052050, desc: "사실 고백하자면 나는 뉴욕 소호에 있는...", score: "4.5" },
             { curator: "지해", name: "so far", lat: 37.545000, lng: 127.045000, desc: "젤라또를 안주로 와인 한 잔!...", score: "4.6" },
             { curator: "예빈", name: "한공간", lat: 37.552000, lng: 126.935000, desc: "경의선숲길 안쪽에 위치한 1인셰프...", score: "4.7" },
@@ -218,8 +239,6 @@
             { curator: "예지", name: "말방국밥", lat: 37.569500, lng: 126.985000, desc: "가게 이름은 국밥이지만 육회비빔밥이 진짜임. 육회랑 야채를 엄청 넉넉히 줌.", score: "4.9" },
             { curator: "예지", name: "이짜", lat: 37.545500, lng: 127.056000, desc: "잠봉, 무화과, 헤이즐넛 버터가 들어간 'Jambon 이짜' 추천. 단짠 피자. 화장실 깨끗함.", score: "4.7" },
             { curator: "예지", name: "더블해피니스", lat: 37.576500, lng: 126.969500, desc: "차우멘이 맛있음.", score: "4.5" },
-
-            // --- [NEW] 슐리 (Sulli) ---
             { curator: "슐리", name: "우래옥", lat: 37.568200, lng: 126.998700, desc: "such a sentimental place. no place does pyeongyang naengmyeon + bulgogi combo better.", score: "4.8" },
             { curator: "슐리", name: "역전회관", lat: 37.542500, lng: 126.948500, desc: "one of my go-to spots. bulgogi is top-tier. try their homemade makgeolli with bulgogi.", score: "4.7" },
             { curator: "슐리", name: "을밀대", lat: 37.547500, lng: 126.946000, desc: "when it comes to bindaetteok and suyuk, Eulmildae definitely wins.", score: "4.8" },
@@ -243,20 +262,18 @@
             { curator: "슐리", name: "묘오또", lat: 37.480000, lng: 126.990000, desc: "top udon places. really chewy and tempura is good. always a line.", score: "4.7" },
             { curator: "슐리", name: "다락소바", lat: 37.550000, lng: 126.920000, desc: "chewy soba noodles and karaage. solid place.", score: "4.5" },
             { curator: "슐리", name: "가미분식", lat: 37.558000, lng: 126.945000, desc: "nostalgic place. perfect for light meals. hard to find places like these now.", score: "4.6" },
-
-            // --- [NEW] 규혁 (Kyuhyeok) ---
-            { curator: "규혁", name: "사테", lat: 37.560000, lng: 126.920000, desc: "콜드 누들, 이베리코 돼지 등 와인 페어링 하기에 걸맞은 짭짤한 메뉴. 추천이 좋다.", score: "4.3" }, // 8.5/10
-            { curator: "규혁", name: "완스", lat: 37.550000, lng: 126.910000, desc: "홍새우 타르타르, 양갈비 스테이크. 와인 vault에서 직접 와인 셀렉 가능.", score: "4.7" }, // 9.3/10
-            { curator: "규혁", name: "칸다소바 경복궁점", lat: 37.577500, lng: 126.972500, desc: "마제소바 맛집. 프랜차이즈화 되었으나 경복궁 지점은 아직 맛있다.", score: "4.2" }, // 8.4/10
-            { curator: "규혁", name: "해몽", lat: 37.515000, lng: 127.030000, desc: "등갈비 맛집. 직원이 구워줌. 추가주문 한도가 있으니 처음에 대량 주문 추천.", score: "4.4" }, // 8.7/10
-            { curator: "규혁", name: "모요", lat: 37.555000, lng: 126.925000, desc: "사시미 모둠, 나베가 맛있다. 수십 종류의 사케 페어링.", score: "4.5" }, // 8.9/10
-            { curator: "규혁", name: "스시스미레", lat: 37.525000, lng: 127.040000, desc: "금눈돔, 아귀 간, 우니가 특별함. 예약이 매우 어렵지만 기념일마다 생각나는 곳.", score: "4.8" }, // 9.5/10
-            { curator: "규혁", name: "영동장어", lat: 37.520000, lng: 127.035000, desc: "강화갯벌장어. 살아있는 장어를 보여줌. 쓸개즙 소주가 특별함.", score: "4.2" }, // 8.3/10
-            { curator: "규혁", name: "우슴", lat: 37.565000, lng: 126.990000, desc: "스지 전골, 어복쟁반. 전국 각지의 핫한 막걸리를 구비하고 있다.", score: "4.3" }, // 8.6/10
-            { curator: "규혁", name: "송화산시도삭면", lat: 37.540000, lng: 127.070000, desc: "도삭면, 가지튀김. 면발의 쫄깃함이 충격적. 조양마트 주류쇼핑 연계 가능.", score: "4.7" }, // 9.4/10
-            { curator: "규혁", name: "이이요", lat: 37.555000, lng: 127.080000, desc: "연어마끼, 게살크림고로케. 광진구 일식 강자. 연어마끼 잊을 수 없음.", score: "4.5" }, // 8.9/10
-            { curator: "규혁", name: "야키토리 혼바", lat: 37.553000, lng: 126.970000, desc: "파인한 야키토리 코스. 익힘이 완벽함. 서울역 인근 경사 있는 예쁜 동네.", score: "4.6" }, // 9.2/10
-            { curator: "규혁", name: "파르코", lat: 37.545000, lng: 127.042000, desc: "화덕피자 맛집. 마르게리따랑 풍기 피자 필수 주문. 카프레제도 굿.", score: "4.5" } // 9.0/10
+            { curator: "규혁", name: "사테", lat: 37.560000, lng: 126.920000, desc: "콜드 누들, 이베리코 돼지 등 와인 페어링 하기에 걸맞은 짭짤한 메뉴. 추천이 좋다.", score: "4.3" },
+            { curator: "규혁", name: "완스", lat: 37.550000, lng: 126.910000, desc: "홍새우 타르타르, 양갈비 스테이크. 와인 vault에서 직접 와인 셀렉 가능.", score: "4.7" },
+            { curator: "규혁", name: "칸다소바 경복궁점", lat: 37.577500, lng: 126.972500, desc: "마제소바 맛집. 프랜차이즈화 되었으나 경복궁 지점은 아직 맛있다.", score: "4.2" },
+            { curator: "규혁", name: "해몽", lat: 37.515000, lng: 127.030000, desc: "등갈비 맛집. 직원이 구워줌. 추가주문 한도가 있으니 처음에 대량 주문 추천.", score: "4.4" },
+            { curator: "규혁", name: "모요", lat: 37.555000, lng: 126.925000, desc: "사시미 모둠, 나베가 맛있다. 수십 종류의 사케 페어링.", score: "4.5" },
+            { curator: "규혁", name: "스시스미레", lat: 37.525000, lng: 127.040000, desc: "금눈돔, 아귀 간, 우니가 특별함. 예약이 매우 어렵지만 기념일마다 생각나는 곳.", score: "4.8" },
+            { curator: "규혁", name: "영동장어", lat: 37.520000, lng: 127.035000, desc: "강화갯벌장어. 살아있는 장어를 보여줌. 쓸개즙 소주가 특별함.", score: "4.2" },
+            { curator: "규혁", name: "우슴", lat: 37.565000, lng: 126.990000, desc: "스지 전골, 어복쟁반. 전국 각지의 핫한 막걸리를 구비하고 있다.", score: "4.3" },
+            { curator: "규혁", name: "송화산시도삭면", lat: 37.540000, lng: 127.070000, desc: "도삭면, 가지튀김. 면발의 쫄깃함이 충격적. 조양마트 주류쇼핑 연계 가능.", score: "4.7" },
+            { curator: "규혁", name: "이이요", lat: 37.555000, lng: 127.080000, desc: "연어마끼, 게살크림고로케. 광진구 일식 강자. 연어마끼 잊을 수 없음.", score: "4.5" },
+            { curator: "규혁", name: "야키토리 혼바", lat: 37.553000, lng: 126.970000, desc: "파인한 야키토리 코스. 익힘이 완벽함. 서울역 인근 경사 있는 예쁜 동네.", score: "4.6" },
+            { curator: "규혁", name: "파르코", lat: 37.545000, lng: 127.042000, desc: "화덕피자 맛집. 마르게리따랑 풍기 피자 필수 주문. 카프레제도 굿.", score: "4.5" }
         ];
 
         let map;
@@ -381,8 +398,7 @@
             const encName = encodeURIComponent(place.name);
             const naverLink = `https://map.naver.com/p/search/${encName}`;
             const kakaoLink = `https://map.kakao.com/link/search/${encName}`;
-            const tmapLink = `https://www.google.com/search?q=티맵+${encName}`;
-
+            
             const score = place.score ? place.score : "4.5";
             
             const marker = new google.maps.Marker({
@@ -410,7 +426,6 @@
                         <div class="map-links">
                             <a href="${naverLink}" target="_blank" class="map-btn naver" title="네이버 지도 검색">N</a>
                             <a href="${kakaoLink}" target="_blank" class="map-btn kakao" title="카카오맵 검색">K</a>
-                            <a href="${tmapLink}" target="_blank" class="map-btn tmap" title="티맵 검색 (구글)">T</a>
                         </div>
                         <span class="score-badge">★ 통합 ${score}</span>
                     </div>
@@ -491,4 +506,3 @@
     </script>
 </body>
 </html>
-
